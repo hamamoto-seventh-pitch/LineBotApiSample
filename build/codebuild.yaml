@@ -1,0 +1,25 @@
+steps:
+  # build the container image
+  - name: gcr.io/cloud-builders/gcloud
+    args:
+      - builds 
+      - submit
+      - '--tag=gcr.io/$PROJECT_ID/line-bot-sample:$COMMIT_SHA'
+  # Deploy container image to Cloud Run 1台目
+  - name: gcr.io/cloud-builders/gcloud
+    args:
+      - run 
+      - deploy
+      - line-bot-sample-1
+      - '--image=gcr.io/$PROJECT_ID/line-bot-sample:$COMMIT_SHA'
+      - '--region=asia-northeast1'
+      - '--cpu=4.0'
+      - '--memory=4Gi'
+      - '--timeout=3600'
+      - '--allow-unauthenticated'
+      - '--update-env-vars' 
+      - 'LINE_TOKEN=${_ENV_LINE_TOKEN},LINE_ACCESS_TOKEN=${_ENV_LINE_ACCESS_TOKEN}'
+substitutions:
+  _ENV_LINE_TOKEN: xxxxxx
+  _ENV_LINE_ACCESS_TOKEN: xxxxxx
+    
